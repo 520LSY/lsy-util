@@ -1,0 +1,22 @@
+{
+    "name": "lsy-util",
+    "version": "0.0.4",
+    "description": "赖某人的常用功能封装",
+    "main": "src",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "exports": {
+        ".": {
+            "import": "./src/index.js",
+            "require": "./src/index.js"
+        },
+        "./ts": {
+            "import": "./src/indexTs.ts",
+            "require": "./src/indexTs.ts"
+        }
+    }
+}
