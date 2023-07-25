@@ -1,0 +1,159 @@
+.pdfBox {
+    width: 898px;
+    height: 850px;
+    padding-right: 5px;
+    display: flex;
+    justify-content: space-between;
+    .pdfInfo {
+        width: 100%;
+    }
+}
+
+.eventTitle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 28px;
+    .titleText {
+        display: flex;
+        align-items: center;
+        font-family: PingFangBold;
+        font-size: 20px;
+        .title {
+            display: inline-block;
+            max-width: 630px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 8px;
+        }
+        .state {
+            display: inline-block;
+            font-size: 16px;
+            padding: 5px 8px;
+
+            color: #ffffff;
+            border-radius: 5px;
+            border: 1px solid #21a0ff;
+            background-color: #0c426a;
+        }
+
+        .icon {
+            width: 22px;
+            height: 22px;
+            background: center url(@/assets/images/event/1.png) no-repeat;
+            margin-right: 4px;
+        }
+    }
+}
+.contentMain {
+    width: auto;
+    height: calc(100% - 3px - 60px);
+    .row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 4px;
+        &:last-of-type {
+            margin-bottom: 0;
+            .time-column {
+                &::after {
+                    display: none;
+                }
+            }
+        }
+        &:nth-child(2n) {
+            .row-column {
+                background-color: rgba(33, 160, 255, 0.1);
+            }
+        }
+        &:first-of-type {
+            .time-column {
+                &::before {
+                    display: none;
+                }
+            }
+        }
+    }
+    .row-column {
+        box-sizing: border-box;
+        flex-shrink: 0;
+        min-width: 260px;
+        flex: 1;
+        height: 110px;
+        margin-left: 5px;
+        background-color: rgba(33, 160, 255, 0.06);
+        padding: 12px 24px;
+        line-height: 1.2;
+
+        .clickFile {
+            color: #21a0ff;
+            cursor: pointer;
+        }
+
+        /* #061F39 */
+        &:first-of-type {
+            width: 200px;
+            margin-left: 0;
+        }
+    }
+    .text-column {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        .content {
+            max-height: 38px;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+
+            /* text-overflow: ellipsis; */
+
+            display: -webkit-box;
+
+            -webkit-box-orient: vertical;
+            margin-bottom: 3px;
+        }
+        .state {
+            width: 100%;
+            white-space: nowrap;
+            /* 设置文本不换行 */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 3px;
+        }
+    }
+    .time-column {
+        display: flex;
+        align-items: center;
+        position: relative;
+        .icon {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            background: center url(@/assets/images/event/10.png) no-repeat;
+            z-index: 1;
+        }
+
+        &::before {
+            position: absolute;
+            display: block;
+            content: '';
+            width: 1px;
+            height: 50%;
+            left: 35px;
+            top: 0;
+            background-color: #21a0ff;
+            opacity: 0.2;
+        }
+        &::after {
+            position: absolute;
+            content: '';
+            width: 1px;
+            height: calc(50% + 4px);
+            left: 35px;
+            bottom: -4px;
+            background-color: #21a0ff;
+            opacity: 0.2;
+        }
+    }
+}

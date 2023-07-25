@@ -109,6 +109,88 @@ class UtilComm {
       ((UtilComm.state.a / sqrtmagic) * Math.cos(radlat) * UtilComm.state.PI);
     return { dlng, dlat };
   }
+  /**
+   * rgb/rgba颜色转换
+   * @param rgba
+   * @returns
+   */
+  static rgbaToHex(rgba) {
+    // 从RGBA字符串中提取出四个值：红、绿、蓝和透明度
+    let values = rgba
+      .substring(rgba.indexOf("(") + 1, rgba.lastIndexOf(")"))
+      .split(",");
+
+    // 将每个值转换为十六进制，并使用padStart方法在不足两位的情况下前面补0
+    let red = parseInt(values[0]).toString(16).padStart(2, "0");
+    let green = parseInt(values[1]).toString(16).padStart(2, "0");
+    let blue = parseInt(values[2]).toString(16).padStart(2, "0");
+    if (values.length == 3) {
+      // 返回合并后的十六进制颜色值
+      return "#" + red + green + blue;
+    } else if (values.length == 4) {
+      let hexAlpha = Math.round(Number(values[3]) * 255)
+        .toString(16)
+        .padStart(2, "0");
+      // 返回合并后的十六进制颜色值
+      return "#" + red + green + blue + hexAlpha;
+    }
+  }
+  /**
+   * 十六进制颜色转换
+   * @param hex
+   * @returns
+   */
+  static hexToRgba(hex) {
+    // 如果十六进制颜色值以#开头，则去除#
+    if (hex.startsWith("#")) {
+      hex = hex.substring(1);
+    }
+
+    // 提取红、绿、蓝三个通道的值
+    let red = parseInt(hex.substring(0, 2), 16);
+    let green = parseInt(hex.substring(2, 4), 16);
+    let blue = parseInt(hex.substring(4, 6), 16);
+    if (hex.length === 6) {
+      // 返回RGBA字符串
+      return `rgb(${red}, ${green}, ${blue})`;
+    } else if (hex.length === 8) {
+    }
+    let alpha = parseInt(hex.substring(6, 8), 16) / 255;
+    // 返回RGBA字符串
+    return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+  }
+  /**
+   * 计算当前元素的旋转角度
+   * @param x1 原点x轴
+   * @param y1 原点y轴
+   * @param x2 上一个停留点x轴
+   * @param y2 上一个停留点y轴
+   * @param x3 当前停留点x轴
+   * @param y3 当前停留点y轴
+   * @param angle 当前旋转的角度
+   */
+  static getAngle(x1 = 0, y1 = 0, x2, y2, x3, y3, angle = 0) {
+    let radian = Math.acos(
+      ((x2 - x1) * (x3 - x1) + (y2 - y1) * (y3 - y1)) /
+        (Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) *
+          Math.sqrt(Math.pow(x3 - x1, 2) + Math.pow(y3 - y1, 2)))
+    );
+
+    let newAngle = (radian * 180) / Math.PI || 0;
+
+    let includedAngle1 = (180 / Math.PI) * Math.atan2(x2, y2);
+
+    let includedAngle2 = (180 / Math.PI) * Math.atan2(x3, y3);
+
+    if (includedAngle1 < includedAngle2) {
+      angle = angle - newAngle;
+    } else {
+      angle = angle + newAngle;
+    }
+    if (typeof angle == "number") {
+      return angle;
+    }
+  }
 }
 /**
  * 格式化时间戳(lsy)
@@ -338,6 +420,169 @@ export function BatchCoordinateTransformation(data, source, target) {
   }
 }
 
+/**
+ * 0.0.5
+ * 文本复制
+ * @param {string} text
+ */
+export function AdhesiveBoard(text) {
+  navigator.clipboard
+    .writeText(text)
+    .then(() => {
+      alert("文本已成功复制到剪贴板");
+    })
+    .catch((error) => {
+      alert("复制文本失败");
+      console.error("复制文本失败:", error);
+    });
+}
+/**
+ * 0.0.5
+ * rgb/rgba与十六进制颜色互转
+ * @param {string} color
+ * @returns string
+ */
+export function ColorConversion(color) {
+  if (color.slice(0, 1) === "#") {
+    // 传入的十六进制颜色，转为rgb或者rgba
+    return UtilComm.hexToRgba(color);
+  } else {
+    return UtilComm.rgbaToHex(color);
+  }
+}
+/**
+ * 0.0.5
+ * 数据转存文件（Firefox、Chrome内核）
+ * @param {string} data 数据
+ * @param {string} name 文件名称（包括后缀名，如果没有默认.txt）
+ */
+export function DataConversionFile(data, name) {
+  //
+  let nameArr = name.split(".");
+  let length = nameArr.length;
+  if (length == 1) {
+    name = name + ".txt";
+  } else if (length > 1 && nameArr[length - 1] == "") {
+    name = name + "txt";
+  }
+  const blob = new Blob([data], {
+    type: "application/text",
+  }); // 构造一个blob对象来处理数据
+
+  // 对于<a>标签，只有 Firefox 和 Chrome（内核） 支持 download 属性
+  // IE10以上支持blob但是依然不支持download
+  if ("download" in document.createElement("a")) {
+    // 支持a标签download的浏览器
+    const link = document.createElement("a"); // 创建a标签
+    link.download = name; // a标签添加属性
+    link.style.display = "none";
+    link.href = URL.createObjectURL(blob);
+    document.body.appendChild(link);
+    link.click(); // 执行下载
+    URL.revokeObjectURL(link.href); // 释放url
+    document.body.removeChild(link); // 释放标签
+  } else {
+    // 其他浏览器
+    navigator.msSaveBlob(blob, name);
+  }
+}
+/**
+ * 0.0.5
+ * 鼠标控制元素旋转
+ * @param {Element} element 要控制的元素节点
+ * @param {number} angle 初始默认旋转角度
+ */
+export function ElementRotation(element, angle, back) {
+  if (!(element instanceof HTMLElement)) {
+    throw new Error("请传入正确的HTMLElement元素");
+  }
+  if (typeof angle != "number") {
+    throw new Error("angle的类型应该是Number");
+  }
+  angle = angle;
+  // 初始化旋转角度
+  element.style.transform = `rotate(${angle}deg)`;
+  // 对元素节点进行处理，以便于获取元素相对于浏览器可是窗口位置
+  let rect = element.getBoundingClientRect();
+  // 获取元素中心点位置（用于计算鼠标位置相对于元素中心点的位置）
+  let origin = [
+    element.clientWidth / 2 + rect.left,
+    element.clientHeight / 2 + rect.top,
+  ];
+  // 定义变量获取鼠标进入元素后第一次点击的位置
+  let clickPosition = [];
+  // 定义变量储存鼠标每次移动的位置
+  let poi = [];
+  // 定义变量判断鼠标是否按下不放
+  let isMouseDown = false;
+
+  // 给目标元素添加鼠标按下事件
+  element.addEventListener("mousedown", (event) => {
+    isMouseDown = true;
+    // 获取鼠标点击的位置
+    clickPosition = [event.clientX - origin[0], event.clientY - origin[1]];
+    // 每次鼠标按下将上次记录的位置置空
+    poi = [];
+  });
+  // 给元素添加移动事件
+  element.addEventListener("mousemove", (event2) => {
+    if (!isMouseDown) return;
+    // 判断并记录上一次鼠标移动位置
+    if (poi.length == 2) {
+      clickPosition = [poi[0], poi[1]];
+    }
+    poi = [event2.clientX - origin[0], event2.clientY - origin[1]];
+
+    angle = UtilComm.getAngle(
+      0,
+      0,
+      clickPosition[0],
+      clickPosition[1],
+      poi[0],
+      poi[1],
+      angle
+    );
+    element.style.transform = `rotate(${angle}deg)`;
+    if (back) {
+      back(angle);
+    }
+  });
+  // 给元素添加鼠标松开事件
+  element.addEventListener("mouseup", () => {
+    isMouseDown = false;
+  });
+  // 给元素添加鼠标移出事件
+  element.addEventListener("mouseout", () => {
+    isMouseDown = false;
+  });
+}
+/**
+ * 0.0.5
+ * 文件下载（.json、.js、图片等会被浏览器直接打开）
+ * @param {string} fileUrl 文件地址
+ * @param {string} fileName 下载下来的文件名
+ */
+export function DownloadFile(fileUrl, fileName) {
+  if (!fileUrl) {
+  }
+  // 创建一个a标签
+  let dom = document.createElement("a");
+  // 设置a标签的href属性值为文件的url地址
+  dom.href = fileUrl;
+  // 设置a标签的下载属性为文件名称
+  dom.download = fileName;
+  // 设置隐藏a标签
+  dom.style.display = "none";
+  // 设置 a 标签的 target属性为 _blank
+  dom.target = "_blank";
+  // 将a标签添加到DOM中
+  document.body.appendChild(dom);
+  // 触发a标签点击事件
+  dom.click();
+  // 移除a标签
+  document.body.removeChild(dom);
+}
+
 // 将倒叙方法挂载到大对象中
 // 时间戳转时间
 UtilComm.FormatTimestamp = FormatTimestamp;
@@ -354,5 +599,12 @@ UtilComm.Throttle = Throttle;
 UtilComm.DebounceAndThrottle = DebounceAndThrottle;
 // 批量转换坐标
 UtilComm.BatchCoordinateTransformation = BatchCoordinateTransformation;
+// 文本复制
+UtilComm.AdhesiveBoard = AdhesiveBoard;
+// 数据转存文件
+UtilComm.DataConversionFile = DataConversionFile;
+// UtilComm.DownloadFile = DownloadFile;
+// 文件下载
+UtilComm.ElementRotation = ElementRotation;
 // 默认暴露大对象
 export default UtilComm;
