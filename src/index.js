@@ -582,6 +582,101 @@ export function DownloadFile(fileUrl, fileName) {
   // 移除a标签
   document.body.removeChild(dom);
 }
+/**
+ * DOM元素拖拽
+ * @param {HTML} targetDom 要被拖拽的目标元素
+ * @param {HTML} parentDom 目标元素允许拖拽的范围，如果不传入那么默认全局（body）
+ */
+export function DomDragAndDrag(targetDom, parentDom = null) {
+  // 判断目标元素是否是DOM元素
+  console.log(window.getComputedStyle(targetDom).position);
+  if (!(targetDom instanceof HTMLElement)) {
+    throw new Error("请确定传入的要拖拽的变量是DOM元素");
+  }
+  switch (window.getComputedStyle(targetDom).position) {
+    case "fixed":
+      // 如果元素是固定定位，那么就不需要父元素DOM，这里为了防止用户传入直接置空，进行容错处理
+      parentDom = null;
+      break;
+    case "absolute":
+      // 如果目标元素是绝对定位，那么要求必须有父元素DOM，并且父元素DOM必须是'relative'定位
+      if (!(parentDom instanceof HTMLElement)) {
+        throw new Error("请确定传入父元素变量是DOM元素");
+      } else {
+        if (window.getComputedStyle(parentDom).position != "relative") {
+          throw new Error("请确定传入父元素设置了相对定位（relative）");
+        }
+      }
+      break;
+    case "relative":
+    case "static":
+      throw new Error("目标元素必须是fixed定位或者absolute定位");
+  }
+  // 定义变量用于判断鼠标是否移动
+  let state = false;
+  // 定义变量存储鼠标第一次按下的鼠标位置
+  let oneClient = {
+    left: 0,
+    top: 0,
+  };
+  // 获取鼠标
+  let rect = parentDom
+    ? parentDom.getBoundingClientRect()
+    : { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
+  // 给元素添加鼠标按下事件
+  targetDom.addEventListener("mousedown", (evt) => {
+    state = true;
+    // 记录鼠标第一次按下的位置
+    oneClient.left = evt.clientX;
+    oneClient.top = evt.clientY;
+  });
+  // 给元素添加鼠标松开事件
+  targetDom.addEventListener("mouseup", (evt) => {
+    state = false;
+  });
+  // 给元素添加鼠标移出事件
+  targetDom.addEventListener("mouseout", (evt) => {
+    state = false;
+  });
+  // 给元素添加移动事件
+  targetDom.addEventListener("mousemove", (evt) => {
+    if (state) {
+      let { left, top, width, height } = targetDom.getBoundingClientRect();
+      // 获取鼠标的位置
+      let { clientX, clientY } = evt;
+      // 获取目标元素相对于waibuhe
+      left = left - rect.left;
+      top = top - rect.top;
+      // 计算获取当前鼠标移动的坐标变化值
+      clientX = clientX - oneClient.left;
+      clientY = clientY - oneClient.top;
+      // 记录这次鼠标的位置，用于下一次计算
+      oneClient.left = evt.clientX;
+      oneClient.top = evt.clientY;
+      // 获取当前元素应该在的位置坐标
+      let newLeft = left + clientX;
+      let newTop = top + clientY;
+      // 对目标元素的偏移量进行判断
+      if (newLeft <= 0) {
+        // 如果目标元素距离左侧小于等于0，那么就不应该继续往左侧偏移
+        newLeft = 0;
+      } else if (newLeft >= rect.width - width) {
+        // 如果目标元素距离左侧的值大于，父元素减掉目标元素宽度，那么元素不应该继续往右侧偏移
+        newLeft = rect.width - width;
+      }
+      if (newTop <= 0) {
+        // 如果目标元素距离顶部小于等于0，那么就不应该继续往顶部偏移
+        newTop = 0;
+      } else if (newTop >= rect.height - height) {
+        // 如果目标元素距离顶部的值大于，父元素减掉目标元素高度，那么元素不应该继续往顶部偏移
+        newTop = rect.height - height;
+      }
+      // 将当前偏移量赋值给目标元素
+      targetDom.style.left = newLeft + "px";
+      targetDom.style.top = newTop + "px";
+    }
+  });
+}
 
 // 将倒叙方法挂载到大对象中
 // 时间戳转时间
@@ -606,5 +701,9 @@ UtilComm.DataConversionFile = DataConversionFile;
 // UtilComm.DownloadFile = DownloadFile;
 // 文件下载
 UtilComm.ElementRotation = ElementRotation;
+// 颜色转换
+UtilComm.ColorConversion = ColorConversion;
+// 元素拖拽
+UtilComm.DomDragAndDrag = DomDragAndDrag;
 // 默认暴露大对象
 export default UtilComm;

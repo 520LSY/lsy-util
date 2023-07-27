@@ -95,7 +95,7 @@
                   <div>{{ getTime(time)[1] }}</div>
                 </div>
               </div>
-              <template v-for="(value, key) in data.progressContent" :key="key">
+              <template v-for="value in data.progressContent" :key="key">
                 <div class="row-column text-column">
                   <n-tooltip trigger="hover">
                     <template #trigger

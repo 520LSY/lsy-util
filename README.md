@@ -133,3 +133,19 @@ LsyUtil.DataConversionFile("本应椿去湫来，奈何北冥有鱼", "lsy.txt")
  */
 LsyUtil.ElementRotation(document.getElementId("test"), 0, () => {});
 ```
+
+#### 14.鼠标控制元素拖拽
+
+```js
+/**
+ * DOM元素拖拽
+ * @param {HTML} targetDom 要被拖拽的目标元素
+ * @param {HTML} parentDom 目标元素允许拖拽的范围，如果不传入那么默认全局（body）
+ * 注意：
+ *      1.targetDom目标元素必须是fixed定位或者absolute定位
+ *      2.如果有父元素（即目标元素为absolute定位），那么父元素必须设置了relative
+ */
+let targetDom = document.getElementById("gragDom") as HTMLElement;
+let gragBoxDom = document.getElementById("gragBox") as HTMLElement;
+LsyUtil.DomDragAndDrag(targetDom, gragBoxDom);
+```

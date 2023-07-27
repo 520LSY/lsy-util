@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <button @click="antiShaking">防抖</button>
     <button @click="Throttling">节流</button>
     <button @click="combination">防抖节流结合</button>
@@ -50,11 +50,14 @@
     <div class="rotationBox">
       <div class="rotation" ref="rotationRef">元素旋转</div>
     </div>
+    <div id="gragBox" class="gragBox">
+      <div id="gragDom"></div>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
-import UtilCommTs from "../../src/indexTs";
+// import UtilCommTs from "../../src/indexTs";
 import UtilCommJs from "../../src/index";
 let colorInput = ref();
 let newColorInput = ref();
@@ -74,15 +77,15 @@ let rotationRef = ref();
 const test: () => void = () => {
   console.log("节流");
 };
-const antiShaking = UtilCommTs.Debounce(
+const antiShaking = UtilCommJs.Debounce(
   () => {
     console.log("防抖");
   },
   800,
   true
 );
-const Throttling = UtilCommTs.Throttle(test, 800);
-const combination = UtilCommTs.DebounceAndThrottle(
+const Throttling = UtilCommJs.Throttle(test);
+const combination = UtilCommJs.DebounceAndThrottle(
   () => {
     console.log("防抖节流结合");
   },
@@ -90,19 +93,19 @@ const combination = UtilCommTs.DebounceAndThrottle(
   500
 );
 const AdhesiveBoard = () => {
-  UtilCommTs.AdhesiveBoard("测试");
+  UtilCommJs.AdhesiveBoard("测试");
 };
 function colorConversion() {
-  newColorInput.value = UtilCommTs.ColorConversion(colorInput.value);
+  newColorInput.value = UtilCommJs.ColorConversion(colorInput.value);
 }
 function formatTimestamp() {
-  timeObj.newValue = UtilCommTs.FormatTimestamp(
+  timeObj.newValue = UtilCommJs.FormatTimestamp(
     timeObj.oldValue,
-    new Date().getTime()
+    String(new Date().getTime())
   );
 }
 function DataConversionFile() {
-  UtilCommTs.DataConversionFile(
+  UtilCommJs.DataConversionFile(
     fileText.value || "测试",
     fileName.value || "test.txt"
   );
@@ -111,9 +114,13 @@ function DownloadFile() {
   //   UtilCommTs.DownloadFile(downloadFileObj.url, downloadFileObj.name);
 }
 onMounted(() => {
-  UtilCommTs.ElementRotation(rotationRef.value, 60, (r: number) => {
+  let targetDom = document.getElementById("gragDom") as HTMLElement;
+  let gragBoxDom = document.getElementById("gragBox") as HTMLElement;
+  UtilCommJs.ElementRotation(rotationRef.value, 60, (r: number) => {
     console.log("r", r);
   });
+  UtilCommJs.DomDragAndDrag(targetDom, gragBoxDom);
+  //   UtilCommJs.DomDragAndDrag(targetDom, gragBoxDom);
   //   UtilCommJs.DataConversionFile("321", "222.json");
   //   fetch("./light.json")
   //     .then((res) => {
@@ -133,6 +140,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.container {
+  width: 100%;
+  overflow: hidden;
+}
 .rotationBox {
   position: relative;
   width: 500px;
@@ -164,5 +175,20 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   user-select: none;
+}
+.gragBox {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  margin-left: 100px;
+}
+#gragDom {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  width: 200px;
+  height: 200px;
+  background-color: aqua;
+  border: 1px solid rgba(3, 31, 172, 0.603);
 }
 </style>
