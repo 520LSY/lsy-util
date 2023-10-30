@@ -12,4 +12,7 @@ export default defineConfig({
       "@components": "/src/components",
     },
   },
+  server: {
+    host: true,
+  },
 });

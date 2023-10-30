@@ -1,4 +1,7 @@
 # 仅发布 dist 目录下的文件
 my-project/
 !src/
+!util/
+!LICENSE.txt
+!LICENSE.a64rpt
 !README.md

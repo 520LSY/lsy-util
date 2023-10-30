@@ -11,6 +11,10 @@
     ],
     "author": "",
     "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:520LSY/lsy-util.git"
+    },
     "exports": {
         ".": {
             "import": "./src/index.js",
