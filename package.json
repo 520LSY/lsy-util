@@ -1,6 +1,6 @@
 {
     "name": "lsy-util",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "赖某人的常用功能封装",
     "main": "src",
     "scripts": {

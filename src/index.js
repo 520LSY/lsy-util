@@ -142,7 +142,7 @@ class UtilComm {
     }
     /**
      * 十六进制颜色转换
-     * @param hex
+     * @param hex #ffffff00
      * @returns
      */
     static hexToRgba(hex) {
@@ -150,7 +150,18 @@ class UtilComm {
         if (hex.startsWith("#")) {
             hex = hex.substring(1);
         }
-
+        switch (hex.length) {
+            case 3:
+                hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`
+                break;
+            case 6:
+            case 8:
+                hex = hex;
+                break;
+            default:
+                alert("请输入正确的格式")
+                return;
+        }
         // 提取红、绿、蓝三个通道的值
         let red = parseInt(hex.substring(0, 2), 16);
         let green = parseInt(hex.substring(2, 4), 16);
@@ -221,7 +232,7 @@ export function FormatTimestamp(
         time = time * 1000;
     }
     // 获取年月日时分秒
-    let date = new Date(time);
+    let date = new Date(Number(time));
     let year = date.getFullYear();
     let month = addZero(date.getMonth() + 1);
     let day = addZero(date.getDate());
@@ -825,7 +836,7 @@ UtilComm.AdhesiveBoard = AdhesiveBoard;
 // 数据转存文件
 UtilComm.DataConversionFile = DataConversionFile;
 // 文件下载
-// UtilComm.DownloadFile = DownloadFile;
+UtilComm.DownloadFile = DownloadFile;
 // 元素旋转
 UtilComm.ElementRotation = ElementRotation;
 // 颜色转换

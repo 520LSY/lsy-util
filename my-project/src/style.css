@@ -28,7 +28,8 @@ body {
   display: flex;
   place-items: center;
   min-width: 320px;
-  min-height: 100vh;
+  padding-top: 80px;
+  /* min-height: 100vh; */
 }
 
 h1 {
@@ -62,7 +63,7 @@ button:focus-visible {
 #app {
   width: 100%;
   margin: 0 auto;
-  text-align: center;
+  /* text-align: center; */
 }
 
 @media (prefers-color-scheme: light) {
