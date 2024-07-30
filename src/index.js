@@ -640,19 +640,21 @@ export function DomDragAndDrag(targetDom, parentDom = null, back) {
         : { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
     // 给元素添加鼠标按下事件
     document.addEventListener("mousedown", (evt) => {
-        state = true;
-        // 记录鼠标第一次按下的位置
-        oneClient.left = evt.clientX;
-        oneClient.top = evt.clientY;
+        if (evt.target == targetDom) {
+            state = true;
+            // 记录鼠标第一次按下的位置
+            oneClient.left = evt.clientX;
+            oneClient.top = evt.clientY;
+        }
     });
     // 给元素添加鼠标松开事件
     document.addEventListener("mouseup", (evt) => {
         state = false;
     });
     // 给元素添加鼠标移出事件
-    targetDom.addEventListener("mouseout", (evt) => {
-        // state = false;
-    });
+    // document.addEventListener("mouseout", (evt) => {
+    //     state = false;
+    // });
     // 给元素添加移动事件
     document.addEventListener("mousemove", (evt) => {
         if (state) {
