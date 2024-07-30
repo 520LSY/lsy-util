@@ -639,22 +639,22 @@ export function DomDragAndDrag(targetDom, parentDom = null, back) {
         ? parentDom.getBoundingClientRect()
         : { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
     // 给元素添加鼠标按下事件
-    targetDom.addEventListener("mousedown", (evt) => {
+    document.addEventListener("mousedown", (evt) => {
         state = true;
         // 记录鼠标第一次按下的位置
         oneClient.left = evt.clientX;
         oneClient.top = evt.clientY;
     });
     // 给元素添加鼠标松开事件
-    targetDom.addEventListener("mouseup", (evt) => {
+    document.addEventListener("mouseup", (evt) => {
         state = false;
     });
     // 给元素添加鼠标移出事件
     targetDom.addEventListener("mouseout", (evt) => {
-        state = false;
+        // state = false;
     });
     // 给元素添加移动事件
-    targetDom.addEventListener("mousemove", (evt) => {
+    document.addEventListener("mousemove", (evt) => {
         if (state) {
             let { left, top, width, height } = targetDom.getBoundingClientRect();
             // 获取鼠标的位置

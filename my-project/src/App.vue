@@ -7,8 +7,22 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import Header from "@/components/Header/index.vue";
+import UtilCommJs from "../../src/index";
 
 onMounted(() => {
+  console.log(
+    UtilCommJs.BatchCoordinateTransformation(
+      [
+        {
+          lng: 103.947237,
+          lon: 103.947237,
+          lat: 30.722849,
+        },
+      ],
+      "BD09",
+      "WGS84"
+    )
+  );
   //
   //   UtilCommJs.DataConversionFile("321", "222.json");00000
   //   fetch("./light.json")
