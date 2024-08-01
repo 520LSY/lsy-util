@@ -602,6 +602,7 @@ export function DownloadFile(fileUrl, fileName) {
  * DOM元素拖拽
  * @param {HTML} targetDom 要被拖拽的目标元素
  * @param {HTML} parentDom 目标元素允许拖拽的范围，如果不传入那么默认全局（body）
+ * @param {(data:any)=>void||Array<(data:any)=>void>} back 执行的回调，如果只有一个方法则每次元素移动执行，如果是数组，那么第一个方法是移动回调，第二个是鼠标松开回调
  */
 export function DomDragAndDrag(targetDom, parentDom = null, back) {
     // 判断目标元素是否是DOM元素
@@ -634,29 +635,49 @@ export function DomDragAndDrag(targetDom, parentDom = null, back) {
         left: 0,
         top: 0,
     };
+    // 定义变量存储当前元素的偏移量
+    const targetPosition = {
+        left: 0,
+        top: 0,
+    }
     // 获取鼠标
     let rect = parentDom
         ? parentDom.getBoundingClientRect()
         : { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
     // 给元素添加鼠标按下事件
-    document.addEventListener("mousedown", (evt) => {
-        if (evt.target == targetDom) {
-            state = true;
-            // 记录鼠标第一次按下的位置
-            oneClient.left = evt.clientX;
-            oneClient.top = evt.clientY;
+    targetDom.addEventListener("mousedown", (evt) => {
+        state = true;
+        // 记录鼠标第一次按下的位置
+        oneClient.left = evt.clientX;
+        oneClient.top = evt.clientY;
+        // 给元素添加移动事件
+        document.addEventListener("mousemove", mouseMobileFun);
+        // 给元素添加鼠标松开事件
+        document.addEventListener("mouseup", mouseMouseUpFun);
+
+    });
+
+
+    // 鼠标松开事件
+    function mouseMouseUpFun() {
+        if (state) {
+            state = false;
+            // 移除元素添加移动事件
+            document.removeEventListener("mousemove", mouseMobileFun)
+            if (back) {
+                if (Array.isArray(back) && back[1]) {
+                    let { left, top, } = targetDom.getBoundingClientRect();
+                    back[1](targetPosition)
+                }
+            }
+            // 下次渲染清除鼠标松开事件
+            setTimeout(() => {
+                document.removeEventListener("mouseup", mouseMouseUpFun)
+            });
         }
-    });
-    // 给元素添加鼠标松开事件
-    document.addEventListener("mouseup", (evt) => {
-        state = false;
-    });
-    // 给元素添加鼠标移出事件
-    // document.addEventListener("mouseout", (evt) => {
-    //     state = false;
-    // });
-    // 给元素添加移动事件
-    document.addEventListener("mousemove", (evt) => {
+    }
+    // 鼠标移动事件
+    function mouseMobileFun(evt) {
         if (state) {
             let { left, top, width, height } = targetDom.getBoundingClientRect();
             // 获取鼠标的位置
@@ -691,11 +712,20 @@ export function DomDragAndDrag(targetDom, parentDom = null, back) {
             // 将当前偏移量赋值给目标元素
             targetDom.style.left = newLeft + "px";
             targetDom.style.top = newTop + "px";
+            targetPosition.left = newLeft;
+            targetPosition.top = newTop;
             if (back) {
-                back({ left: newLeft, top: newTop })
+                if (Array.isArray(back) && back[0]) {
+                    back[0]({ left: newLeft, top: newTop })
+                } else if (!Array.isArray(back)) {
+                    back({ left: newLeft, top: newTop })
+                }
             }
         }
-    });
+    }
+
+
+
 }
 /**
  * excel转json
