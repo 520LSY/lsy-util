@@ -62,7 +62,8 @@ onMounted(() => {
     });
     let targetDom = document.getElementById("gragDom") as HTMLElement;
     let gragBoxDom = document.getElementById("gragBox") as HTMLElement;
-    UtilCommJs.DomDragAndDrag(targetDom, gragBoxDom, [
+    // let left = 0;
+    const { setLeft } = UtilCommJs.DomDragAndDrag(targetDom, gragBoxDom, [
       (data: any) => {
         console.log("这是元素移动", data);
       },
@@ -70,6 +71,12 @@ onMounted(() => {
         console.log("这是鼠标松开", data);
       },
     ]);
+    // setInterval(() => {
+    //   left += 100;
+    //   setLeft(left);
+    // }, 1000);
+    // window.setLeft = setLeft;
+    setLeft(10000);
   });
 });
 </script>

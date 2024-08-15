@@ -605,6 +605,11 @@ export function DownloadFile(fileUrl, fileName) {
  * @param {(data:any)=>void||Array<(data:any)=>void>} back 执行的回调，如果只有一个方法则每次元素移动执行，如果是数组，那么第一个方法是移动回调，第二个是鼠标松开回调
  */
 export function DomDragAndDrag(targetDom, parentDom = null, back) {
+    // 距离左侧最大偏移值
+    let maxleft = 0;
+
+
+
     // 判断目标元素是否是DOM元素
     if (!(targetDom instanceof HTMLElement)) {
         throw new Error("请确定传入的要拖拽的变量是DOM元素");
@@ -628,6 +633,7 @@ export function DomDragAndDrag(targetDom, parentDom = null, back) {
         case "static":
             throw new Error("目标元素必须是fixed定位或者absolute定位");
     }
+
     // 定义变量用于判断鼠标是否移动
     let state = false;
     // 定义变量存储鼠标第一次按下的鼠标位置
@@ -656,7 +662,10 @@ export function DomDragAndDrag(targetDom, parentDom = null, back) {
         document.addEventListener("mouseup", mouseMouseUpFun);
 
     });
-
+    // 初始化的时候就限制位置
+    if (maxleft && maxleft <= rect.width - width) {
+        targetDom.style.left = maxleft + "px";
+    }
 
     // 鼠标松开事件
     function mouseMouseUpFun() {
@@ -709,6 +718,9 @@ export function DomDragAndDrag(targetDom, parentDom = null, back) {
                 // 如果目标元素距离顶部的值大于，父元素减掉目标元素高度，那么元素不应该继续往顶部偏移
                 newTop = rect.height - height;
             }
+            if (maxleft && maxleft <= newLeft) {
+                return
+            }
             // 将当前偏移量赋值给目标元素
             targetDom.style.left = newLeft + "px";
             targetDom.style.top = newTop + "px";
@@ -723,8 +735,18 @@ export function DomDragAndDrag(targetDom, parentDom = null, back) {
             }
         }
     }
+    // 设置元素距离左侧最大偏移值
+    function setLeft(left) {
+        let { width } = targetDom.getBoundingClientRect();
+        if (left <= rect.width - width) {
+            maxleft = left;
+            if (left) {
+                targetDom.style.left = maxleft + "px";
+            }
+        }
+    }
 
-
+    return { setLeft }
 
 }
 /**

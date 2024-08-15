@@ -1,6 +1,6 @@
 {
     "name": "lsy-util",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "description": "赖某人的常用功能封装",
     "main": "src",
     "scripts": {
@@ -24,5 +24,8 @@
             "import": "./src/indexTs.ts",
             "require": "./src/indexTs.ts"
         }
+    },
+    "dependencies": {
+        "lsy-util": "file:"
     }
 }

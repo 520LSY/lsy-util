@@ -9,6 +9,7 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "my-project": "file:",
         "path": "^0.12.7",
         "vue": "^3.2.47",
         "vue-router": "^4.3.0"
