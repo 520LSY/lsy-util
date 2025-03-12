@@ -90,7 +90,11 @@ class UtilComm {
      */
     static out_of_china(lng, lat) {
         return (
-            lng < 72.004 || lng > 137.8347 || lat < 0.8293 || lat > 55.8271 || false
+            lng < 72.004 ||
+            lng > 137.8347 ||
+            lat < 0.8293 ||
+            lat > 55.8271 ||
+            false
         );
     }
     /**
@@ -107,11 +111,14 @@ class UtilComm {
         var sqrtmagic = Math.sqrt(magic);
         dlat =
             (dlat * 180.0) /
-            (((UtilComm.state.a * (1 - UtilComm.state.ee)) / (magic * sqrtmagic)) *
+            (((UtilComm.state.a * (1 - UtilComm.state.ee)) /
+                (magic * sqrtmagic)) *
                 UtilComm.state.PI);
         dlng =
             (dlng * 180.0) /
-            ((UtilComm.state.a / sqrtmagic) * Math.cos(radlat) * UtilComm.state.PI);
+            ((UtilComm.state.a / sqrtmagic) *
+                Math.cos(radlat) *
+                UtilComm.state.PI);
         return { dlng, dlat };
     }
     /**
@@ -152,14 +159,14 @@ class UtilComm {
         }
         switch (hex.length) {
             case 3:
-                hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`
+                hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`;
                 break;
             case 6:
             case 8:
                 hex = hex;
                 break;
             default:
-                alert("请输入正确的格式")
+                alert("请输入正确的格式");
                 return;
         }
         // 提取红、绿、蓝三个通道的值
@@ -188,8 +195,8 @@ class UtilComm {
     static getAngle(x1 = 0, y1 = 0, x2, y2, x3, y3, angle = 0) {
         let radian = Math.acos(
             ((x2 - x1) * (x3 - x1) + (y2 - y1) * (y3 - y1)) /
-            (Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) *
-                Math.sqrt(Math.pow(x3 - x1, 2) + Math.pow(y3 - y1, 2)))
+                (Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) *
+                    Math.sqrt(Math.pow(x3 - x1, 2) + Math.pow(y3 - y1, 2)))
         );
 
         let newAngle = (radian * 180) / Math.PI || 0;
@@ -415,7 +422,10 @@ export function BatchCoordinateTransformation(data, source, target) {
         case "GCJ02":
             if (source === "WGS84") {
                 data.forEach((item) => {
-                    let coordinate = Wgs84togcj02(Number(item.lon), Number(item.lat));
+                    let coordinate = Wgs84togcj02(
+                        Number(item.lon),
+                        Number(item.lat)
+                    );
                     item.lon = coordinate[0];
                     item.lat = coordinate[1];
                 });
@@ -424,7 +434,10 @@ export function BatchCoordinateTransformation(data, source, target) {
         case "WGS84":
             if (source === "GCJ02" || source === "BD09") {
                 data.forEach((item) => {
-                    let coordinate = Gcj02towgs84(Number(item.lon), Number(item.lat));
+                    let coordinate = Gcj02towgs84(
+                        Number(item.lon),
+                        Number(item.lat)
+                    );
                     item.lon = coordinate[0];
                     item.lat = coordinate[1];
                 });
@@ -607,9 +620,6 @@ export function DownloadFile(fileUrl, fileName) {
 export function DomDragAndDrag(targetDom, parentDom = null, back) {
     // 距离左侧最大偏移值
     let maxleft = 0;
-
-
-
     // 判断目标元素是否是DOM元素
     if (!(targetDom instanceof HTMLElement)) {
         throw new Error("请确定传入的要拖拽的变量是DOM元素");
@@ -625,7 +635,9 @@ export function DomDragAndDrag(targetDom, parentDom = null, back) {
                 throw new Error("请确定传入父元素变量是DOM元素");
             } else {
                 if (window.getComputedStyle(parentDom).position != "relative") {
-                    throw new Error("请确定传入父元素设置了相对定位（relative）");
+                    throw new Error(
+                        "请确定传入父元素设置了相对定位（relative）"
+                    );
                 }
             }
             break;
@@ -645,11 +657,16 @@ export function DomDragAndDrag(targetDom, parentDom = null, back) {
     const targetPosition = {
         left: 0,
         top: 0,
-    }
+    };
     // 获取鼠标
     let rect = parentDom
         ? parentDom.getBoundingClientRect()
-        : { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
+        : {
+              left: 0,
+              top: 0,
+              width: window.innerWidth,
+              height: window.innerHeight,
+          };
     // 给元素添加鼠标按下事件
     targetDom.addEventListener("mousedown", (evt) => {
         state = true;
@@ -660,7 +677,6 @@ export function DomDragAndDrag(targetDom, parentDom = null, back) {
         document.addEventListener("mousemove", mouseMobileFun);
         // 给元素添加鼠标松开事件
         document.addEventListener("mouseup", mouseMouseUpFun);
-
     });
     // 初始化的时候就限制位置
     if (maxleft && maxleft <= rect.width - width) {
@@ -672,23 +688,24 @@ export function DomDragAndDrag(targetDom, parentDom = null, back) {
         if (state) {
             state = false;
             // 移除元素添加移动事件
-            document.removeEventListener("mousemove", mouseMobileFun)
+            document.removeEventListener("mousemove", mouseMobileFun);
             if (back) {
                 if (Array.isArray(back) && back[1]) {
-                    let { left, top, } = targetDom.getBoundingClientRect();
-                    back[1](targetPosition)
+                    let { left, top } = targetDom.getBoundingClientRect();
+                    back[1](targetPosition);
                 }
             }
             // 下次渲染清除鼠标松开事件
             setTimeout(() => {
-                document.removeEventListener("mouseup", mouseMouseUpFun)
+                document.removeEventListener("mouseup", mouseMouseUpFun);
             });
         }
     }
     // 鼠标移动事件
     function mouseMobileFun(evt) {
         if (state) {
-            let { left, top, width, height } = targetDom.getBoundingClientRect();
+            let { left, top, width, height } =
+                targetDom.getBoundingClientRect();
             // 获取鼠标的位置
             let { clientX, clientY } = evt;
             // 获取目标元素相对于waibuhe
@@ -718,8 +735,8 @@ export function DomDragAndDrag(targetDom, parentDom = null, back) {
                 // 如果目标元素距离顶部的值大于，父元素减掉目标元素高度，那么元素不应该继续往顶部偏移
                 newTop = rect.height - height;
             }
-            if (maxleft && maxleft <= newLeft) {
-                return
+            if (maxleft && maxleft < newLeft) {
+                return;
             }
             // 将当前偏移量赋值给目标元素
             targetDom.style.left = newLeft + "px";
@@ -728,9 +745,9 @@ export function DomDragAndDrag(targetDom, parentDom = null, back) {
             targetPosition.top = newTop;
             if (back) {
                 if (Array.isArray(back) && back[0]) {
-                    back[0]({ left: newLeft, top: newTop })
+                    back[0]({ left: newLeft, top: newTop });
                 } else if (!Array.isArray(back)) {
-                    back({ left: newLeft, top: newTop })
+                    back({ left: newLeft, top: newTop });
                 }
             }
         }
@@ -746,12 +763,11 @@ export function DomDragAndDrag(targetDom, parentDom = null, back) {
         }
     }
 
-    return { setLeft }
-
+    return { setLeft };
 }
 /**
  * excel转json
- * @param {*} id 
+ * @param {*} id
  */
 export function ExcelJson(id = "inputId") {
     //
@@ -843,26 +859,26 @@ export function ExcelJson(id = "inputId") {
 /**
  * base6图片
  * @param {*} base64Img base64图片地址
- * @returns 
+ * @returns
  */
-export function CoverBase64ToImg(dataurl, filename = 'file') {
-    const arr = dataurl.split(',')
-    const mime = arr[0].match(/:(.*?);/)[1]
-    const suffix = mime.split('/')[1]
-    const bstr = atob(arr[1])
-    let n = bstr.length
-    const u8arr = new Uint8Array(n)
+export function CoverBase64ToImg(dataurl, filename = "file") {
+    const arr = dataurl.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const suffix = mime.split("/")[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
     while (n--) {
-        u8arr[n] = bstr.charCodeAt(n)
+        u8arr[n] = bstr.charCodeAt(n);
     }
     return new File([u8arr], `${filename}.${suffix}`, {
-        type: mime
-    })
+        type: mime,
+    });
 }
 //图片下载
 function downloadBlob(blob, filename) {
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = filename;
     a.click();

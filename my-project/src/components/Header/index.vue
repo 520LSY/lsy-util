@@ -10,39 +10,10 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { reactive } from "vue";
 import { useRouter } from "vue-router";
+import { headerList } from "@/components/Header/index";
 const router = useRouter();
-const headerList = reactive([
-  {
-    name: "防抖节流",
-    page: "/",
-  },
-  {
-    name: "文本复制",
-    page: "/textCopy",
-  },
-  {
-    name: "颜色转换",
-    page: "/colorConversion",
-  },
-  {
-    name: "时间格式",
-    page: "/timeFormat",
-  },
-  {
-    name: "文件",
-    page: "/file",
-  },
-  {
-    name: "页面元素",
-    page: "/rotation",
-  },
-  {
-    name: "测试",
-    page: "/test",
-  },
-]);
+
 const goToPage = (url: string) => {
   router.push(url);
 };

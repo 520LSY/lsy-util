@@ -1,6 +1,6 @@
 {
     "name": "lsy-util",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "description": "赖某人的常用功能封装",
     "main": "src",
     "scripts": {
@@ -26,6 +26,10 @@
         }
     },
     "dependencies": {
-        "lsy-util": "file:"
+        "lsy-util": "file:",
+        "vue": "^3.5.12"
+    },
+    "devDependencies": {
+        "@vue/babel-plugin-jsx": "^1.2.5"
     }
 }

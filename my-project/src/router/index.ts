@@ -7,6 +7,10 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: "/index",
+    component: () => import("../pages/Home/index.vue"),
+  },
+  {
+    path: "/antiShakingThrottling",
     component: () => import("../pages/AntiShakingThrottling/index.vue"),
   },
   {
